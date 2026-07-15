@@ -4,26 +4,22 @@ import java.io.FileReader;
 
 public class MatrixReader {
 
-    public static int readDimension(String filename) {
+    public static SparseMatrix read(String filename, String type) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filename));
-            String line = reader.readLine();
-            reader.close();
-            if (line == null) return -1;
-            String[] parts = line.split(" +");
-            return Integer.parseInt(parts[0]);
-        } catch (Exception e) {
-            System.out.println("Error reading file: " + e.getMessage());
-            return -1;
-        }
-    }
 
-    public static void read(String filename, SparseMatrix matrix) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
-            reader.readLine(); // skip first line (dimension already used)
+            // first line: get dimension
+            int dimension = Integer.parseInt(reader.readLine().split(" +")[0]);
 
-            // Read remaining lines for non-zero elements
+            // create the right matrix type
+            SparseMatrix matrix;
+            if (type.equals("rowwise")) {
+                matrix = new RowWiseMatrix(dimension);
+            } else {
+                matrix = new COOMatrix(dimension);
+            }
+
+            // read remaining lines for non-zero elements
             String line = reader.readLine();
             while (line != null) {
                 String[] parts = line.split(" +");
@@ -31,15 +27,17 @@ public class MatrixReader {
                 int col = Integer.parseInt(parts[1]);
                 double value = Double.parseDouble(parts[2]);
 
-                // Convert from 1-indexed (file) to 0-indexed (internal)
+                // convert from 1-indexed (file) to 0-indexed (internal)
                 matrix.set(row - 1, col - 1, value);
                 line = reader.readLine();
             }
 
             reader.close();
+            return matrix;
 
         } catch (Exception e) {
             System.out.println("Error reading file: " + e.getMessage());
+            return null;
         }
     }
 }
