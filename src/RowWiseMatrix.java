@@ -23,10 +23,12 @@ public class RowWiseMatrix implements SparseMatrix {
         }
     }
 
+    @Override
     public int getDimension() {
         return dimension;
     }
 
+    @Override
     public double get(int row, int col) {
         if (row < 0 || col < 0 || row >= dimension || col >= dimension) return 0.0;
         RowNode current = rows[row];
@@ -39,6 +41,7 @@ public class RowWiseMatrix implements SparseMatrix {
         return 0.0;
     }
 
+    @Override
     public void set(int row, int col, double value) {
         if (row < 0 || col < 0 || row >= dimension || col >= dimension) return;
         RowNode current = rows[row];
@@ -55,6 +58,7 @@ public class RowWiseMatrix implements SparseMatrix {
         rows[row] = newNode;
     }
 
+    @Override
     public void delete(int row, int col) {
         if (row < 0 || col < 0 || row >= dimension || col >= dimension) return;
         if (rows[row] == null) return;
@@ -76,6 +80,7 @@ public class RowWiseMatrix implements SparseMatrix {
         }
     }
 
+    @Override
     public SparseMatrix reducedMatrix(int skipRow, int skipCol) {
         RowWiseMatrix minor = new RowWiseMatrix(dimension - 1);
         for (int i = 0; i < dimension; i++) {
